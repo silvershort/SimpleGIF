@@ -1,16 +1,20 @@
 package com.silvershort.simplegif
 
+import android.media.MediaScannerConnection
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import android.view.MenuItem
+import com.arthenica.mobileffmpeg.Config
+import com.arthenica.mobileffmpeg.FFmpeg
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.SimpleExoPlayer
 import com.google.android.exoplayer2.source.ClippingMediaSource
 import com.google.android.exoplayer2.source.MediaSource
 import com.google.android.exoplayer2.source.ProgressiveMediaSource
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
+import com.google.android.exoplayer2.util.Log
 import com.google.android.exoplayer2.util.Util
 import idv.luchafang.videotrimmer.VideoTrimmerView
 import idv.luchafang.videotrimmer.tools.dpToPx
@@ -67,8 +71,24 @@ class EditActivity : AppCompatActivity(), VideoTrimmerView.OnSelectedRangeChange
         }, 100)
 
         edit_tv_complete.setOnClickListener({
+            val cmd = "-y -i -ss -t"
+            Log.d(TAG, "cmd : $cmd")
+            Thread(Runnable {
+                val rc = FFmpeg.execute(cmd)
 
+                if (rc == Config.RETURN_CODE_SUCCESS) {
+                    
+                }
+            })
         })
+    }
+
+    private fun scanSaveFile(path: String) {
+        MediaScannerConnection.scanFile(applicationContext,
+            arrayOf(path), null, object : MediaScannerConnection.OnScanCompletedListener {
+                override fun onScanCompleted(path: String?, uri: Uri?) {
+                }
+            })
     }
 
     private fun dpToPx(dp: Float): Float {
