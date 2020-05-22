@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#8ED3E4</color>
+    <color name="colorPrimaryDark">#3C9DD1</color>
+    <color name="colorAccent">#C36F2A</color>
+
+    <color name="common_button_solid">#8ED3E4</color>
+    <color name="common_button_solid_pressed">#77ABB8</color>
+    <color name="common_button_stork">#FFFFFF</color>
+    <color name="common_button_stork_pressed">#CACACA</color>
+</resources>

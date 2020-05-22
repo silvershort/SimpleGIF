@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".EditActivity">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/edit_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?actionBarSize"
+        android:elevation="2dp"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/edit_tv_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:textSize="16sp"
+            android:text="@string/common_edit"/>
+
+        <TextView
+            android:id="@+id/edit_tv_complete"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:layout_gravity="right|center_vertical"
+            android:paddingLeft="16sp"
+            android:paddingRight="16sp"
+            android:textSize="14sp"
+            android:text="@string/common_complete"/>
+
+    </androidx.appcompat.widget.Toolbar>
+
+    <com.google.android.exoplayer2.ui.PlayerView
+        android:id="@+id/edit_playerview"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:use_controller="false"
+        app:layout_constraintTop_toBottomOf="@id/edit_toolbar"
+        app:layout_constraintBottom_toTopOf="@+id/edit_trimmerview"/>
+
+    <TextView
+        android:id="@+id/edit_durationview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="12dp"
+        android:textSize="12dp"
+        android:textColor="@android:color/white"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/edit_trimmerview"/>
+
+    <idv.luchafang.videotrimmer.VideoTrimmerView
+        android:id="@+id/edit_trimmerview"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="11dp"
+        app:vtv_window_bar_width="15dp"
+        app:vtv_window_border_color="@android:color/white"
+        app:vtv_window_border_width="1dp"
+        app:vtv_window_left_bar="@drawable/trimmer_left_bar"
+        app:vtv_window_right_bar="@drawable/trimmer_right_bar"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

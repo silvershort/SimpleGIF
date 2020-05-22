@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">簡単GIF</string>
+    <string name="common_load">読み込み</string>
+    <string name="common_edit">編集する</string>
+    <string name="common_complete">完了</string>
+    <string name="common_selected">選択された秒</string>
+</resources>

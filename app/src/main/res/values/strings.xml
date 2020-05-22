@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">SimpleGIF</string>
+    <string name="common_load">Load</string>
+    <string name="common_edit">Edit</string>
+    <string name="common_complete">Done</string>
+    <string name="common_selected">Seconds selected</string>
+</resources>
