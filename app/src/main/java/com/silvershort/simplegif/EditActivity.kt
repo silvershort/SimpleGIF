@@ -4,6 +4,7 @@ import android.media.MediaScannerConnection
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Environment
 import android.os.Handler
 import android.view.MenuItem
 import com.arthenica.mobileffmpeg.Config
@@ -39,6 +40,12 @@ class EditActivity : AppCompatActivity(), VideoTrimmerView.OnSelectedRangeChange
     private val path: String by lazy {
         intent.getStringExtra("path")
     }
+
+    private val rootFolder by lazy {
+        File(Environment.getExternalStorageDirectory().absolutePath + Environment.DIRECTORY_DCIM
+                    + "SimpleGIF")
+    }
+
     private var sMillis: Long = 0
     private var eMillis: Long = 0
 
@@ -72,15 +79,22 @@ class EditActivity : AppCompatActivity(), VideoTrimmerView.OnSelectedRangeChange
 
         edit_tv_complete.setOnClickListener({
             val cmd = "-y -i -ss -t"
+            val rootPath = rootFolder.absolutePath
+
             Log.d(TAG, "cmd : $cmd")
             Thread(Runnable {
                 val rc = FFmpeg.execute(cmd)
 
                 if (rc == Config.RETURN_CODE_SUCCESS) {
-                    
+                    createFolder()
+
                 }
             })
         })
+    }
+
+    private fun createFolder() {
+        if (!rootFolder.exists()) rootFolder.mkdir()
     }
 
     private fun scanSaveFile(path: String) {
