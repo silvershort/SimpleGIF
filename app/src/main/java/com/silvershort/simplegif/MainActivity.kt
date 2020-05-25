@@ -3,9 +3,13 @@ package com.silvershort.simplegif
 import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.provider.MediaStore
+import android.util.Log
 import android.view.View
+import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import kotlinx.android.synthetic.main.activity_main.*
@@ -13,7 +17,8 @@ import kotlinx.android.synthetic.main.activity_main.*
 class MainActivity : AppCompatActivity() {
 
     private val TAG = "!!!MainActivity!!!"
-    private val EDIT_REQUEST_CODE = 1001
+    private val GALLERY_REQUEST_CODE = 1001
+    private val EDIT_REQUEST_CODE = 1002
     private val STORAGE_PERMISSION = 3001
 
     private val requiredPermissions = arrayOf(
@@ -31,9 +36,22 @@ class MainActivity : AppCompatActivity() {
         setupPermissions()
 
         main_load_button.setOnClickListener(View.OnClickListener {
-            val intent = Intent(this, EditActivity::class.java)
-            startActivityForResult(intent, EDIT_REQUEST_CODE)
+            val intent = Intent(Intent.ACTION_PICK);
+            intent.data = MediaStore.Video.Media.EXTERNAL_CONTENT_URI
+            intent.type = "video/*"
+            startActivityForResult(intent, GALLERY_REQUEST_CODE)
         })
+    }
+
+    private fun getRealPathFromURI(contentUri: Uri): String? {
+        var columnIndex = 0
+        val proj = arrayOf(MediaStore.Images.Media.DATA)
+        val cursor =
+            contentResolver.query(contentUri, proj, null, null, null)
+        if (cursor!!.moveToFirst()) {
+            columnIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA)
+        }
+        return cursor.getString(columnIndex)
     }
 
     private fun setupPermissions() {
@@ -53,8 +71,17 @@ class MainActivity : AppCompatActivity() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        when(EDIT_REQUEST_CODE) {
-
+        when(requestCode) {
+            GALLERY_REQUEST_CODE -> {
+                if (data != null) {
+                    val uri = data.data
+                    val path = getRealPathFromURI(uri!!)
+                    val intent = Intent(this, EditActivity::class.java)
+                    intent.putExtra("path", path)
+                    startActivityForResult(intent, EDIT_REQUEST_CODE)
+                } else {
+                }
+            }
         }
     }
 
@@ -63,8 +90,10 @@ class MainActivity : AppCompatActivity() {
         when(requestCode) {
             STORAGE_PERMISSION -> {
                 if (grantResults.isEmpty() || grantResults[0] != PackageManager.PERMISSION_GRANTED) {
-                }else{
+                    Log.d(TAG, "거부됨")
                     finish()
+                } else {
+                    Log.d(TAG, "허용됨")
                 }
                 return
             }

@@ -4,4 +4,6 @@
     <string name="common_edit">Edit</string>
     <string name="common_complete">Done</string>
     <string name="common_selected">Seconds selected</string>
+    <string name="progress_converting">Converting...</string>
+    <string name="progress_cancel">Cancel</string>
 </resources>

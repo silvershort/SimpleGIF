@@ -13,7 +13,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:text="@string/progress_dialog_title"
+        android:text="@string/progress_converting"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toTopOf="@+id/progress_pro_view"
         app:layout_constraintStart_toStartOf="parent"
