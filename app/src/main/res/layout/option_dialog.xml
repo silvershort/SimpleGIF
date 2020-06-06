@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/option_main_card"
+    android:layout_width="320dp"
+    android:layout_height="wrap_content"
+    app:cardCornerRadius="10dp"
+    app:cardElevation="0dp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/option_main_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/transparent"
+        android:layout_marginBottom="15dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp">
+
+        <TextView
+            android:id="@+id/option_title_tv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:padding="10dp"
+            android:text="Option"
+            android:textSize="16sp"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <View
+            android:id="@+id/option_guide_view"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/colorPrimaryDark"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            app:layout_constraintTop_toBottomOf="@id/option_title_tv" />
+
+        <TextView
+            android:id="@+id/option_encoding_tv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:textSize="14sp"
+            android:paddingLeft="15dp"
+            android:text="@string/option_encoding_method"
+            app:layout_constraintTop_toBottomOf="@id/option_guide_view"/>
+
+
+        <RadioGroup
+            android:id="@+id/option_encoding_radiogroup"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintTop_toBottomOf="@id/option_encoding_tv">
+
+            <RadioButton
+                android:id="@+id/option_item_low_radiobutton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:buttonTint="@color/colorPrimary"
+                android:text="@string/option_radio_normal">
+            </RadioButton>
+
+            <RadioButton
+                android:id="@+id/option_item_high_radiobutton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:buttonTint="@color/colorPrimary"
+                android:text="@string/option_radio_palette">
+            </RadioButton>
+
+        </RadioGroup>
+
+        <TextView
+            android:id="@+id/option_width_size_tv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:textSize="14sp"
+            android:paddingLeft="15dp"
+            android:text="@string/option_width"
+            app:layout_constraintTop_toBottomOf="@id/option_encoding_radiogroup"/>
+
+        <RadioGroup
+            android:id="@+id/option_width_radiogroup"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintTop_toBottomOf="@id/option_width_size_tv">
+
+            <RadioButton
+                android:id="@+id/option_item_320px_radiobutton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:buttonTint="@color/colorPrimary"
+                android:text="320px">
+            </RadioButton>
+
+            <RadioButton
+                android:id="@+id/option_item_480px_radiobutton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:buttonTint="@color/colorPrimary"
+                android:text="480px">
+            </RadioButton>
+
+            <RadioButton
+                android:id="@+id/option_item_original_radiobutton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:buttonTint="@color/colorPrimary"
+                android:text="@string/option_original">
+            </RadioButton>
+
+        </RadioGroup>
+
+        <TextView
+            android:id="@+id/option_frame_tv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:textSize="14sp"
+            android:paddingLeft="15dp"
+            android:text="@string/option_frame"
+            app:layout_constraintTop_toBottomOf="@id/option_width_radiogroup"/>
+
+        <RadioGroup
+            android:id="@+id/option_frame_radiogroup"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintTop_toBottomOf="@id/option_frame_tv">
+
+            <RadioButton
+                android:id="@+id/option_item_10f_radiobutton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:buttonTint="@color/colorPrimary"
+                android:text="10">
+            </RadioButton>
+
+            <RadioButton
+                android:id="@+id/option_item_15f_radiobutton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:buttonTint="@color/colorPrimary"
+                android:text="15">
+            </RadioButton>
+
+        </RadioGroup>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.cardview.widget.CardView>

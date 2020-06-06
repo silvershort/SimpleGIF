@@ -1,10 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">簡単GIF</string>
-    <string name="common_load">読み込み</string>
+    <string name="button_load">読み込み</string>
     <string name="common_edit">編集する</string>
     <string name="common_complete">完了</string>
     <string name="common_selected">選択された秒</string>
     <string name="progress_converting">変換中...</string>
     <string name="progress_cancel">キャンセル</string>
+    <string name="button_info">アプリ情報</string>
+    <string name="button_option">オプション</string>
+    <string name="info_title">アプリ情報</string>
+    <string name="main_output_complete">変換が完了しました</string>
+    <string name="main_output_savepath">保存パス :</string>
+    <string name="common_ok">OK</string>
+    <string name="option_radio_normal">一般的な (Low n Fast)</string>
+    <string name="option_radio_palette">パレット (High n Slow)</string>
+    <string name="option_encoding_method">- エンコード方式</string>
+    <string name="option_width">- 横の長さ</string>
+    <string name="option_original">元の</string>
+    <string name="option_frame">- フレーム</string>
+    <string name="progress_extraction">パレット 抽出中...</string>
 </resources>

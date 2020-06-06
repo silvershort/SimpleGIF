@@ -1,9 +1,22 @@
 <resources>
     <string name="app_name">SimpleGIF</string>
-    <string name="common_load">Load</string>
+    <string name="button_load">Load</string>
     <string name="common_edit">Edit</string>
     <string name="common_complete">Done</string>
     <string name="common_selected">Seconds selected</string>
     <string name="progress_converting">Converting...</string>
     <string name="progress_cancel">Cancel</string>
+    <string name="button_info">AppInfo</string>
+    <string name="button_option">Option</string>
+    <string name="info_title">AppInfo</string>
+    <string name="main_output_complete">Conversion is complete</string>
+    <string name="main_output_savepath">Save path :</string>
+    <string name="common_ok">OK</string>
+    <string name="option_radio_normal">Normal (Low n Fast)</string>
+    <string name="option_radio_palette">Palette (High n Slow)</string>
+    <string name="option_encoding_method">- Encoding method</string>
+    <string name="option_width">- Image width</string>
+    <string name="option_original">Original</string>
+    <string name="option_frame">- Frame</string>
+    <string name="progress_extraction">Palette extraction...</string>
 </resources>

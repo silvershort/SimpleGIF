@@ -1,10 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">간단GIF</string>
-    <string name="common_load">불러오기</string>
+    <string name="app_name">간단움짤</string>
+    <string name="button_load">불러오기</string>
     <string name="common_edit">편집하기</string>
     <string name="common_complete">완료</string>
     <string name="common_selected">초 선택됨</string>
     <string name="progress_converting">변환 중...</string>
     <string name="progress_cancel">취소</string>
+    <string name="button_info">어플 정보</string>
+    <string name="button_option">옵션</string>
+    <string name="info_title">어플 정보</string>
+    <string name="main_output_complete">변환이 완료되었습니다</string>
+    <string name="main_output_savepath">저장 경로 :</string>
+    <string name="common_ok">확인</string>
+    <string name="option_radio_normal">일반 (Low n Fast)</string>
+    <string name="option_radio_palette">팔레트 (High n Slow)</string>
+    <string name="option_encoding_method">- 인코딩 방식</string>
+    <string name="option_width">- 가로 길이</string>
+    <string name="option_original">원본</string>
+    <string name="option_frame">- 프레임</string>
+    <string name="progress_extraction">파레트 추출 중...</string>
 </resources>

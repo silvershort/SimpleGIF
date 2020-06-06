@@ -9,9 +9,10 @@ import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
 import android.view.View
-import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import com.bumptech.glide.Glide
+import com.silvershort.simplegif.dialog.OptionDialog
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
@@ -35,12 +36,33 @@ class MainActivity : AppCompatActivity() {
 
         setupPermissions()
 
+        main_info_button.setOnClickListener {
+            val intent = Intent(this, InfoActivity::class.java)
+            startActivity(intent)
+        }
+
         main_load_button.setOnClickListener(View.OnClickListener {
             val intent = Intent(Intent.ACTION_PICK);
             intent.data = MediaStore.Video.Media.EXTERNAL_CONTENT_URI
             intent.type = "video/*"
             startActivityForResult(intent, GALLERY_REQUEST_CODE)
         })
+
+        main_option_button.setOnClickListener {
+            val optionDialog = OptionDialog()
+            optionDialog.show(supportFragmentManager, optionDialog.tag)
+            optionDialog.setDialogResultInterface(object : OptionDialog.OnDialogResult {
+                override fun finish() {
+
+                }
+            })
+        }
+    }
+
+    private fun gifDraw(path: String) {
+        Glide.with(this)
+            .load(path)
+            .into(main_output_iv)
     }
 
     private fun getRealPathFromURI(contentUri: Uri): String? {
@@ -80,6 +102,15 @@ class MainActivity : AppCompatActivity() {
                     intent.putExtra("path", path)
                     startActivityForResult(intent, EDIT_REQUEST_CODE)
                 } else {
+                }
+            }
+            EDIT_REQUEST_CODE -> {
+                if (data != null) {
+                    main_output_layout.visibility = View.VISIBLE
+                    val path = data.getStringExtra("path")
+                    Log.d(TAG, "EDIT_REQUEST_CODE : ${path}")
+                    gifDraw(path)
+                    main_output_savepath_tv.text = "${getString(R.string.main_output_savepath)} $path"
                 }
             }
         }

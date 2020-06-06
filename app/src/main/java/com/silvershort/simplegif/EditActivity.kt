@@ -1,5 +1,7 @@
 package com.silvershort.simplegif
 
+import android.app.Activity
+import android.content.Intent
 import android.media.MediaScannerConnection
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
@@ -22,9 +24,13 @@ import com.google.android.exoplayer2.source.ProgressiveMediaSource
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.google.android.exoplayer2.util.Util
 import com.silvershort.simplegif.dialog.CustomProgressDialog
+import com.silvershort.simplegif.util.PreferenceManager
 import idv.luchafang.videotrimmer.VideoTrimmerView
-import idv.luchafang.videotrimmer.tools.dpToPx
 import kotlinx.android.synthetic.main.activity_edit.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
@@ -40,8 +46,10 @@ class EditActivity : AppCompatActivity(), VideoTrimmerView.OnSelectedRangeChange
         }
     }
     private val dataSource by lazy {
-        DefaultDataSourceFactory(this@EditActivity,
-            Util.getUserAgent(this@EditActivity, getString(R.string.app_name)))
+        DefaultDataSourceFactory(
+            this@EditActivity,
+            Util.getUserAgent(this@EditActivity, getString(R.string.app_name))
+        )
     }
     private lateinit var mediaSource: MediaSource
     private lateinit var path: String
@@ -53,6 +61,13 @@ class EditActivity : AppCompatActivity(), VideoTrimmerView.OnSelectedRangeChange
     private var duration: Long = 0
     private var sMillis: Long = 0
     private var eMillis: Long = 0
+    private val option: OptionData by lazy {
+        OptionData(
+            PreferenceManager.getEncoding(),
+            PreferenceManager.getWidth(),
+            PreferenceManager.getFrame()
+        )
+    }
 
     override fun onResume() {
         super.onResume()
@@ -64,6 +79,11 @@ class EditActivity : AppCompatActivity(), VideoTrimmerView.OnSelectedRangeChange
         super.onPause()
     }
 
+    override fun onDestroy() {
+        player?.release()
+        super.onDestroy()
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_edit)
@@ -71,6 +91,8 @@ class EditActivity : AppCompatActivity(), VideoTrimmerView.OnSelectedRangeChange
         setSupportActionBar(edit_toolbar)
         supportActionBar?.setDisplayShowTitleEnabled(false)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
+        PreferenceManager.getPreferences(this)
 
         path = intent.getStringExtra("path")
         Log.d(TAG, "path: $path")
@@ -107,46 +129,107 @@ class EditActivity : AppCompatActivity(), VideoTrimmerView.OnSelectedRangeChange
 
             createFolder()
 
-            val cmd = "-y -i '$path' -ss $startTime -t $endTime -vf scale=320:-1 -r 10 -pix_fmt rgb8 '$savePath'"
-//            val trimCmd = "-y -i '$path' -ss $startTime -t $endTime -vcodec copy '$cachePath'"
-//            val cmd = "-y -i '$cachePath' -filter_complex 'fps=10,scale=320:-1:flags=lanczos[x];[x]split[x1][x2];[x1]palettegen[p];[x2][p]paletteuse' '$savePath'"
-//            val cmd = "-y -i '$path' -ss $startTime -t $endTime -filter_complex 'fps=10,scale=320:-1:flags=lanczos[x];[x]split[x1][x2];[x1]palettegen[p];[x2][p]paletteuse' '$savePath'"
 
-//            Log.d(TAG, "cmd : $paletteCmd")
-            Log.d(TAG, "cmd : $cmd")
-            Thread(Runnable {
-//                FFmpeg.execute(paletteCmd)
-//                FFmpeg.execute(trimCmd)
-                val rc = FFmpeg.execute(cmd)
+            when (option.encoding) {
+                PreferenceManager.ENCODING_NORMAL -> {
+                    val cmd =
+                        "-y -i '$path' -ss $startTime -t $endTime -vf scale=${option.width}:-1 -r ${option.frame} -pix_fmt rgb8 '$savePath'"
+                    Log.d(TAG, "cmd : $cmd")
+                    executeFFmpeg(cmd, savePath)
+                }
+                PreferenceManager.ENCODING_PALETTE -> {
+                    val trimCmd =
+                        "-y -i '$path' -ss $startTime -t $endTime -vcodec copy '$cachePath'"
+                    Log.d(TAG, "trimCmd : $trimCmd")
+                    val cmd =
+                        "-y -i '$cachePath' -filter_complex 'fps=${option.frame},scale=${option.width}:-1:flags=lanczos[x];[x]split[x1][x2];[x1]palettegen[p];[x2][p]paletteuse' '$savePath'"
+//                    "-y -i '$path' -ss $startTime -t $endTime -filter_complex 'fps=${option.frame},scale=${option.width}:-1:flags=lanczos[x];[x]split[x1][x2];[x1]palettegen[p];[x2][p]paletteuse' '$savePath'"
+                    Log.d(TAG, "cmd : $cmd")
 
-                if (rc == Config.RETURN_CODE_SUCCESS) {
-                    scanSaveFile(savePath)
-                    finish()
-                } else {
+                    GlobalScope.launch(Dispatchers.Main) {
+                        val job1 = launch { executeFFmpeg(trimCmd, savePath, cmd) }
+                        val job2 = launch {  }
+                    }
 
                 }
-            }).start()
-
-            val proDialog = CustomProgressDialog(getString(R.string.progress_converting))
-            proDialog.show(supportFragmentManager, "proDialog")
-            proDialog.setDialogResultInterface(object : CustomProgressDialog.OnDialogResult {
-                override fun finish() {
-                    FFmpeg.cancel()
-                    Toast.makeText(this@EditActivity, getString(R.string.progress_cancel), Toast.LENGTH_SHORT).show()
-                }
-            })
-
-            Config.enableStatisticsCallback(StatisticsCallback {
-                val progress = it.time / duration.toDouble()
-                Log.d(TAG, String.format("frame: ${it.videoFrameNumber} time: ${it.time}"))
-                Log.d(TAG, String.format("progress: $progress"))
-                proDialog.setText(progress)
-            })
-
-            Config.enableLogCallback(LogCallback {
-                Log.d(TAG, "FFmpeg : ${it.text}")
-            })
+            }
         }
+    }
+
+    private fun executeFFmpeg(cmd: String, savePath: String) {
+        Thread(Runnable {
+            val rc = FFmpeg.execute(cmd)
+
+            if (rc == Config.RETURN_CODE_SUCCESS) {
+                scanSaveFile(savePath)
+                val intent = Intent()
+                intent.putExtra("path", savePath)
+                setResult(Activity.RESULT_OK, intent)
+                finish()
+            } else {
+
+            }
+        }).start()
+
+        val proDialog = CustomProgressDialog(getString(R.string.progress_converting))
+        proDialog.show(supportFragmentManager, "proDialog")
+        proDialog.setDialogResultInterface(object : CustomProgressDialog.OnDialogResult {
+            override fun finish() {
+                FFmpeg.cancel()
+                Toast.makeText(
+                    this@EditActivity,
+                    getString(R.string.progress_cancel),
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        })
+
+        Config.enableStatisticsCallback(StatisticsCallback {
+            val progress = it.time / duration.toDouble()
+            Log.d(TAG, String.format("frame: ${it.videoFrameNumber} time: ${it.time}"))
+            Log.d(TAG, String.format("progress: $progress"))
+            proDialog.setText(progress)
+        })
+
+        Config.enableLogCallback(LogCallback {
+            Log.d(TAG, "FFmpeg : ${it.text}")
+        })
+    }
+
+    private fun executeFFmpeg(trimCmd: String, savePath: String, cmd: String) {
+        Thread(Runnable {
+            val rc = FFmpeg.execute(trimCmd)
+
+            if (rc == Config.RETURN_CODE_SUCCESS) {
+                executeFFmpeg(cmd, savePath)
+            } else {
+
+            }
+        }).start()
+
+        val proDialog = CustomProgressDialog(getString(R.string.progress_extraction))
+        proDialog.show(supportFragmentManager, "proDialog")
+        proDialog.setDialogResultInterface(object : CustomProgressDialog.OnDialogResult {
+            override fun finish() {
+                FFmpeg.cancel()
+                Toast.makeText(
+                    this@EditActivity,
+                    getString(R.string.progress_cancel),
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        })
+
+        Config.enableStatisticsCallback(StatisticsCallback {
+            val progress = it.time / duration.toDouble()
+            Log.d(TAG, String.format("frame: ${it.videoFrameNumber} time: ${it.time}"))
+            Log.d(TAG, String.format("progress: $progress"))
+            proDialog.setText(progress)
+        })
+
+        Config.enableLogCallback(LogCallback {
+            Log.d(TAG, "FFmpeg : ${it.text}")
+        })
     }
 
     private fun createFolder() {
@@ -166,7 +249,7 @@ class EditActivity : AppCompatActivity(), VideoTrimmerView.OnSelectedRangeChange
         return dp * density
     }
 
-    private fun timeConverter(rawLong: Long): String{
+    private fun timeConverter(rawLong: Long): String {
         Log.d(TAG, "rawLong : $rawLong")
         val sec = rawLong / 1000
         val mSec = rawLong % 1000
@@ -179,6 +262,8 @@ class EditActivity : AppCompatActivity(), VideoTrimmerView.OnSelectedRangeChange
 
     private fun showDuration(startMillis: Long, endMillis: Long) {
         duration = endMillis - startMillis
+        edit_start_time.text = "${startMillis / 1000.0}"
+        edit_end_time.text = "${endMillis / 1000.0}"
         val doubleDuration = (endMillis - startMillis) / 1000.0
         edit_durationview.text = "$doubleDuration ${getString(R.string.common_selected)}"
     }

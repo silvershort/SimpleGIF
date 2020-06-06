@@ -17,6 +17,7 @@ class CustomProgressDialog() : DialogFragment() {
 
     private lateinit var progress: HorizontalProgressView
     private lateinit var progress_tv_title: TextView
+    private lateinit var progress_pro_view: HorizontalProgressView
     private lateinit var dialogResult: OnDialogResult
     private var title: String? = null
 
@@ -30,6 +31,9 @@ class CustomProgressDialog() : DialogFragment() {
         dialog?.setCanceledOnTouchOutside(false)
         progress = view.findViewById(R.id.progress_pro_view)
         progress_tv_title = view.findViewById(R.id.progress_tv_title);
+        progress_pro_view = view.findViewById(R.id.progress_pro_view);
+
+        progress_pro_view.progress = 0
 
         if (!title.isNullOrEmpty()) {
             progress_tv_title.text = title
@@ -41,7 +45,6 @@ class CustomProgressDialog() : DialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return object : Dialog(activity!!, theme) {
             override fun onBackPressed() {
-                Log.d(TAG, "백버튼이 다이얼로그에서 눌림")
                 if (dialogResult != null) {
                     dialogResult.finish()
                 }
